@@ -1,0 +1,76 @@
+/* Reset margin & padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Set background and base font */
+body {
+  background-color: black;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Main heading */
+h1 {
+  font-size: 3rem;
+  margin-top: 5%;
+}
+
+/* Fireworks canvas */
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+}
+
+/* Marquee container styling */
+.marquee-wrapper {
+  margin-top: 30px;
+}
+
+marquee {
+  width: 90%;
+  max-width: 700px;
+  margin: 10px auto;
+  display: block;
+  font-size: 1.2rem;
+  color: white;
+}
+
+/* Image styling */
+.responsive-img {
+  margin-top: 30px;
+  max-width: 90%;
+  width: 300px;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 0 10px white;
+}
+
+/* Responsive text sizes */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  marquee {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  marquee {
+    font-size: 0.9rem;
+  }
+}
