@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Octra TX Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+    }
+    form {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    input[type="text"] {
+      padding: 0.5rem;
+      font-size: 1rem;
+      width: 400px;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      margin-left: 0.5rem;
+    }
+    #result {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Octra TX (Nonce) Checker</h1>
+  <form id="check-form">
+    <input type="text" id="address" placeholder="Masukkan alamat Octra (oct...)" required>
+    <button type="submit">Cek</button>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    const form = document.getElementById('check-form');
+    const addressInput = document.getElementById('address');
+    const resultBox = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const address = addressInput.value.trim();
+
+      if (!address.startsWith("oct")) {
+        resultBox.innerHTML = '<p class="error">Alamat harus diawali dengan "oct".</p>';
+        return;
+      }
+
+      resultBox.innerHTML = '⏳ Mengambil data...';
+
+      try {
+        const res = await fetch(`https://octra.network/balance/${address}`);
+        if (!res.ok) throw new Error("Gagal mengambil data dari server");
+        const data = await res.json();
+
+        if (typeof data.nonce !== 'undefined') {
+          resultBox.innerHTML = `
+            <h3>✅ Info untuk ${address}:</h3>
+            <p><strong>Nonce / TX terakhir:</strong> ${data.nonce}</p>
+            <p><strong>Saldo:</strong> ${parseFloat(data.balance / 1_000_000).toFixed(6)} OCT</p>
+          `;
+        } else {
+          resultBox.innerHTML = '<p class="error">Alamat tidak ditemukan atau format salah.</p>';
+        }
+      } catch (err) {
+        resultBox.innerHTML = `<p class="error">⚠️ Gagal mengambil data: ${err.message}</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
