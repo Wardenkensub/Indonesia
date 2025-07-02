@@ -45,49 +45,26 @@
   <div class="result" id="result"></div>
 
   <script>
-    const form = document.getElementById("checkForm");
-    const resultDiv = document.getElementById("result");
+  const form = document.getElementById("checkForm");
+  const resultDiv = document.getElementById("result");
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      resultDiv.textContent = "";
-      
-      const input = document.getElementById("addresses").value.trim();
-      const addresses = input.split("\n").map(line => line.trim()).filter(line => line);
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    resultDiv.textContent = "⏳ Mengambil data...\n";
 
-      if (addresses.length === 0) {
-        resultDiv.innerHTML = "<span class='error'>Mohon masukkan minimal 1 address.</span>";
-        return;
+    const input = document.getElementById("addresses").value.trim();
+    const addresses = input.split("\n").map(line => line.trim()).filter(line => line);
+
+    for (const addr of addresses) {
+      try {
+        const resp = await fetch(`http://62.171.185.54:8080/balance?addr=${addr}`);
+        const data = await resp.json();
+        resultDiv.textContent += `✅ ${addr}\n  Nonce: ${data.nonce}\n  Saldo: ${(parseInt(data.balance) / 1_000_000).toFixed(6)} OCT\n\n`;
+      } catch {
+        resultDiv.textContent += `❌ Gagal ambil data untuk ${addr}\n`;
       }
-      if (addresses.length > 10) {
-        resultDiv.innerHTML = "<span class='error'>Maksimal 10 address!</span>";
-        return;
-      }
-
-      resultDiv.textContent = "⏳ Mengambil data...\n";
-
-      for (const addr of addresses) {
-        if (!addr.startsWith("oct")) {
-          resultDiv.textContent += `❌ ${addr} bukan address Octra yang valid.\n`;
-          continue;
-        }
-
-        try {
-          const resp = await fetch(`http://62.171.185.54:8080/balance?addr=${addr}`);
-          const data = await resp.json();
-
-          if (data.error) {
-            resultDiv.textContent += `❌ Gagal ambil data untuk ${addr} (${data.error})\n`;
-          } else {
-            const oct = (parseInt(data.balance_raw || "0") / 1_000_000).toFixed(6);
-            resultDiv.textContent += `✅ ${addr}\n  Nonce: ${data.nonce}\n  Saldo: ${oct} OCT\n\n`;
-          }
-
-        } catch (err) {
-          resultDiv.textContent += `❌ Gagal ambil data untuk ${addr}\n`;
-        }
-      }
-    });
-  </script>
+    }
+  });
+</script>
 </body>
 </html>
