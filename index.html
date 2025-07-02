@@ -57,7 +57,7 @@
 
     for (const addr of addresses) {
       try {
-        const resp = await fetch(`http://62.171.185.54:8080/balance?addr=${addr}`);
+        const resp = await fetch(`https://upload-schedule-drives-enlargement.trycloudflare.com/balance?addr=${addr}`);
         const data = await resp.json();
         resultDiv.textContent += `✅ ${addr}\n  Nonce: ${data.nonce}\n  Saldo: ${(parseInt(data.balance) / 1_000_000).toFixed(6)} OCT\n\n`;
       } catch {
